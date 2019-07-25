@@ -1,2 +1,2 @@
-# Ctrl-Z
+# Ctrl Z
 BattleCode V1.0 
