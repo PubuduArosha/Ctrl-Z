@@ -1,61 +1,55 @@
 import robocode.HitRobotEvent;
-//import robocode.AlphaBot;
-import robocode.BravoBot;
-//import robocode.HitByBulletEvent;
-//import robocode.HitWallEvent;
+import robocode.*;
 import robocode.ScannedRobotEvent;
-import java.awt.Color;
 
-public class CtrlZ extends BravoBot {
-	
-	int turnDirection = 1;
+import java.awt.*;
 
+public class CtrlZ extends CharlieBot {
 
-	public void run() {
-		
-		setBodyColor(Color.red);
-		setGunColor(Color.red);
-		setRadarColor(Color.red);
+    boolean peek; 
+    double moveAmount; 
 
-		while (true) {
-			turnRight(20 * turnDirection);
-		}
-	}
+   
+    public void run() {
+        setBodyColor(Color.red);
+        setGunColor(Color.red);
+        setRadarColor(Color.red);
+        setBulletColor(Color.red);
+        setScanColor(Color.red);
+        
+        moveAmount = Math.max(getBattleFieldWidth(), getBattleFieldHeight());
+        peek = false;
 
-
-	public void onScannedRobot(ScannedRobotEvent e) {
-
-		if (e.getBearing() >= 0) {
-			turnDirection = 1;
-		} else {
-			turnDirection = -1;
-		}
-
-		turnRight(e.getBearing());
-		ahead(e.getDistance() + 5);
-		scan();
-	}
-
-	public void onHitRobot(HitRobotEvent e) {
-		if (e.getBearing() >= 0) {
-			turnDirection = 1;
-		} else {
-			turnDirection = -1;
-		}
-		turnRight(e.getBearing());
-
-	
-		if (e.getEnergy() > 16) {
-			fire(3);
-		} else if (e.getEnergy() > 10) {
-			fire(2);
-		} else if (e.getEnergy() > 4) {
+        turnLeft(getHeading() % 90);
+        ahead(moveAmount);
+        peek = true;
+        turnGunRight(90);
+        turnRight(90);
+		fire(1);
+        while (true) {
 			fire(1);
-		} else if (e.getEnergy() > 2) {
-			fire(.5);
-		} else if (e.getEnergy() > .4) {
-			fire(.1);
-		}
-		ahead(40); 
-}
+            peek = true;
+            ahead(moveAmount);
+            peek = false;
+            turnRight(90);
+        }
+    }
+
+    public void onHitRobot(HitRobotEvent e) {
+        
+        if (e.getBearing() > -90 && e.getBearing() < 90) {
+            back(100);
+        } 
+        else {
+            ahead(100);
+        }
+    }
+
+    public void onRobotDetected(ScannedRobotEvent e) {
+		turnGunRight(180);
+        fire(2);
+        if (peek) {
+            scan();
+        }
+    }
 }
