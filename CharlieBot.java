@@ -4,7 +4,7 @@ import robocode.ScannedRobotEvent;
 
 import java.awt.*;
 
-public class CtrlZ extends CharlieBot {
+public class CtrlZCharlieBot extends CharlieBot {
 
     boolean peek; 
     double moveAmount; 
